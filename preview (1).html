@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Laboratorio de Proporciones</title>
+
+  <!-- MONTSERRAT -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root{
+      --azul:#26588a;
+      --azul-oscuro:#344151;
+      --verde:#ccef3a;
+      --blanco:#f4f4f4;
+      --borde:#dfe5e9;
+      --blanco-puro:#ffffff;
+    }
+
+    *{
+      box-sizing:border-box;
+      font-family:"Montserrat";
+    }
+
+    body{
+      margin:0;
+      padding:14px;
+      background:var(--blanco);
+      color:var(--azul-oscuro);
+    }
+
+    .laboratorio{
+      width:100%;
+      max-width:720px;
+      margin:auto;
+    }
+
+    /* CONTROL */
+
+    .control{
+      background:var(--blanco-puro);
+      border:1px solid var(--borde);
+      border-radius:16px;
+      padding:18px 20px;
+      margin-bottom:12px;
+    }
+
+    .titulo{
+      color:var(--azul);
+      font-weight:700;
+      font-size:17px;
+    }
+
+    .cantidad{
+      font-size:27px;
+      font-weight:800;
+      margin:7px 0 10px;
+      color:var(--azul-oscuro);
+    }
+
+    .instruccion{
+      margin-top:8px;
+      font-size:12px;
+      font-weight:500;
+      color:#68747d;
+    }
+
+    input[type="range"]{
+      width:100%;
+      height:7px;
+      border-radius:10px;
+      appearance:none;
+      background:#e1e5e8;
+      outline:none;
+      cursor:pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb{
+      appearance:none;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background:var(--azul);
+      cursor:pointer;
+      border:none;
+    }
+
+    input[type="range"]::-moz-range-thumb{
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background:var(--azul);
+      cursor:pointer;
+      border:none;
+    }
+
+    /* TABLERO */
+
+    .tablero{
+      background:var(--blanco-puro);
+      border:1px solid var(--borde);
+      border-radius:16px;
+      padding:15px;
+      margin-bottom:12px;
+    }
+
+    .residuos{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:8px;
+    }
+
+    .residuo{
+      height:62px;
+      border:1px solid var(--borde);
+      border-radius:10px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#fff;
+      font-size:28px;
+      transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease;
+    }
+
+    .residuo.activo{
+      background:#f7fbdc;
+      border-color:var(--verde);
+      transform:translateY(-2px);
+    }
+
+    .vacio{
+      color:var(--azul-oscuro);
+      font-size:23px;
+      line-height:1;
+    }
+
+    .resumen{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:16px;
+      font-size:13px;
+      font-weight:500;
+    }
+
+    .resumen strong{
+      font-weight:800;
+    }
+
+    /* RESULTADOS */
+
+    .resultados{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+
+    .resultado{
+      background:var(--blanco-puro);
+      border:1px solid var(--borde);
+      border-radius:14px;
+      padding:13px 8px;
+      text-align:center;
+    }
+
+    .resultado-titulo{
+      color:var(--azul);
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .valor{
+      color:var(--azul-oscuro);
+      font-size:25px;
+      font-weight:800;
+      margin:8px 0 4px;
+    }
+
+    .ayuda{
+      font-size:11px;
+      font-weight:500;
+      color:#737d84;
+    }
+
+    /* MARCA VERDE */
+
+    .linea-verde{
+      width:46px;
+      height:4px;
+      border-radius:20px;
+      background:var(--verde);
+      margin-top:6px;
+    }
+
+    @media(max-width:520px){
+
+      body{
+        padding:9px;
+      }
+
+      .residuo{
+        height:52px;
+        font-size:23px;
+      }
+
+      .cantidad{
+        font-size:24px;
+      }
+
+      .resultado{
+        padding:11px 5px;
+      }
+
+      .valor{
+        font-size:21px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="laboratorio">
+
+    <!-- CONTROL -->
+    <section class="control">
+
+      <div class="titulo">
+        🍌 Cáscaras de fruta
+      </div>
+
+      <div class="linea-verde"></div>
+
+      <div class="cantidad">
+        <span id="cantidad">0</span> de 10
+      </div>
+
+      <input
+        type="range"
+        id="slider"
+        min="0"
+        max="10"
+        value="0"
+        step="1"
+        aria-label="Cantidad de cáscaras de fruta"
+      >
+
+      <div class="instruccion">
+        👆 Mueve el control para cambiar la cantidad.
+      </div>
+
+    </section>
+
+
+    <!-- BANANITOS -->
+    <section class="tablero">
+
+      <div
+        class="residuos"
+        id="residuos"
+        aria-live="polite">
+      </div>
+
+      <div class="resumen">
+
+        <span>
+          🍌 Seleccionados:
+          <strong id="seleccionados">0</strong>
+        </span>
+
+        <span>
+          ○ Otros:
+          <strong id="otros">10</strong>
+        </span>
+
+        <span>
+          Total:
+          <strong>10</strong>
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- RESULTADOS -->
+    <section class="resultados">
+
+      <div class="resultado">
+
+        <div class="resultado-titulo">
+          FRACCIÓN
+        </div>
+
+        <div class="valor" id="fraccion">
+          0/10
+        </div>
+
+        <div class="ayuda">
+          parte / total
+        </div>
+
+      </div>
+
+
+      <div class="resultado">
+
+        <div class="resultado-titulo">
+          DECIMAL
+        </div>
+
+        <div class="valor" id="decimal">
+          0
+        </div>
+
+        <div class="ayuda">
+          parte ÷ total
+        </div>
+
+      </div>
+
+
+      <div class="resultado">
+
+        <div class="resultado-titulo">
+          PORCENTAJE
+        </div>
+
+        <div class="valor" id="porcentaje">
+          0 %
+        </div>
+
+        <div class="ayuda">
+          decimal × 100
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    const slider =
+      document.getElementById("slider");
+
+    const cantidad =
+      document.getElementById("cantidad");
+
+    const seleccionados =
+      document.getElementById("seleccionados");
+
+    const otros =
+      document.getElementById("otros");
+
+    const residuos =
+      document.getElementById("residuos");
+
+    const fraccion =
+      document.getElementById("fraccion");
+
+    const decimal =
+      document.getElementById("decimal");
+
+    const porcentaje =
+      document.getElementById("porcentaje");
+
+
+    function formato(numero){
+
+      return Number(
+        numero.toFixed(2)
+      )
+      .toString()
+      .replace(".",",");
+
+    }
+
+
+    function crearTablero(valor){
+
+      residuos.innerHTML = "";
+
+      for(let i = 0; i < 10; i++){
+
+        const casilla =
+          document.createElement("div");
+
+        casilla.className =
+          "residuo";
+
+        if(i < valor){
+
+          casilla.classList.add("activo");
+          casilla.textContent = "🍌";
+
+          casilla.setAttribute(
+            "aria-label",
+            "Cáscara de fruta"
+          );
+
+        }
+
+        else{
+
+          const circulo =
+            document.createElement("span");
+
+          circulo.className =
+            "vacio";
+
+          circulo.textContent =
+            "○";
+
+          casilla.appendChild(circulo);
+
+          casilla.setAttribute(
+            "aria-label",
+            "Otro residuo"
+          );
+
+        }
+
+        residuos.appendChild(casilla);
+
+      }
+
+    }
+
+
+    function actualizar(){
+
+      const valor =
+        Number(slider.value);
+
+      const total = 10;
+
+      const valorDecimal =
+        valor / total;
+
+      const valorPorcentaje =
+        valorDecimal * 100;
+
+
+      cantidad.textContent =
+        valor;
+
+      seleccionados.textContent =
+        valor;
+
+      otros.textContent =
+        total - valor;
+
+
+      fraccion.textContent =
+        valor + "/" + total;
+
+      decimal.textContent =
+        formato(valorDecimal);
+
+      porcentaje.textContent =
+        formato(valorPorcentaje) + " %";
+
+
+      crearTablero(valor);
+
+    }
+
+
+    slider.addEventListener(
+      "input",
+      actualizar
+    );
+
+
+    actualizar();
+
+  </script>
+
+</body>
+</html>
